@@ -146,7 +146,7 @@ def parse_data_extentions(body):
         if cse.isdigit() and cse != "000":
             parsed.update({'course': int(cse) if 1 <= int(cse) <= 360 else 0})
         if spd.isdigit() and spd != "000":
-            parsed.update({'speed': int(spd)*1.852})
+            parsed.update({'speed': int(spd)})
 
         # DF Report format
         # Page 29 of teh spec

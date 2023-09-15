@@ -70,7 +70,7 @@ def parse_position(packet_type, body):
         body, result = parse_weather_data(body)
         if wind_speed:
             result.update({
-                'wind_speed': wind_speed,
+                'wind_speed': wind_speed * 0.44704,
             })
         elif wind_direction:
             # Since result.get("speed") now returns None if speed is 0,
