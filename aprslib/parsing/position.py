@@ -62,27 +62,18 @@ def parse_position(packet_type, body):
     if parsed['symbol'] == '_':
         # attempt to parse winddir/speed
         # Page 92 of the spec
+
+        # Duplicate body since parse_data_extentions() trims it and chops off
+        # part of the weather packet that parse_weather_data() expects
+        weather_body = body
+
+        # Parse extensions
         body, result = parse_data_extentions(body)
-        wind_speed = result.get("speed")
-        wind_direction = result.get("course")
+        parsed.update(result)
 
         logger.debug("Attempting to parse weather report from comment")
-        body, result = parse_weather_data(body)
-        if wind_speed:
-            result.update({
-                'wind_speed': wind_speed * 0.44704,
-            })
-        elif wind_direction:
-            # Since result.get("speed") now returns None if speed is 0,
-            # set wind speed as zero if wind direction has also been reported
-            # This is consistent with the behavior in 0.7.1 and earlier.
-            result.update({
-                'wind_speed': 0,
-            })
-        if wind_direction:
-            result.update({
-                'wind_direction': wind_direction,
-            })
+        body, result = parse_weather_data(weather_body)
+
         parsed.update({
             'comment': body.strip(' '),
             'weather': result,
