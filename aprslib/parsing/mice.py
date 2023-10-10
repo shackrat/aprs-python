@@ -378,8 +378,9 @@ def parse_mice(dstcall, body):
         # Look for Mic-Eradio data in the comment
         # See http://www.aprs.org/aprs12/mic-e-types.txt for spec details
         comment = body.strip(' ')
-        prefix = RADIO_TYPE_PREFIXES.index(comment[0])
-        if (prefix):
+        if (len(comment) >= 1 and comment[0] in RADIO_TYPE_PREFIXES):
+            prefix = RADIO_TYPE_PREFIXES.index(comment[0])
+
             # Find a matching suffix
             for i in range(len(RADIO_MODELS)):
                 if comment[-(len(RADIO_MODELS[i]["s"])):] in RADIO_MODELS[i]["s"] and RADIO_TYPE_PREFIXES[prefix] == RADIO_MODELS[i]["p"]:
