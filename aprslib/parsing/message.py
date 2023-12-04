@@ -23,6 +23,12 @@ def parse_message(body):
 
     # the while loop is used to easily break out once a match is found
     while True:
+        # validate addresse
+        addresse_match = re.findall(r"^([a-zA-Z0-9_ \-]{9}):(.*)$", body)
+        if addresse_match:
+            addresse, body2 = addresse_match[0]
+            parsed.update({'addresse': addresse.rstrip(' ')})
+
         # try to match bulletin
         match = re.findall(r"^BLN([0-9])([a-z0-9_ \-]{5}):(.{0,67})", body, re.I)
         if match:
@@ -53,14 +59,10 @@ def parse_message(body):
                 })
             break
 
-        # validate addresse
-        match = re.findall(r"^([a-zA-Z0-9_ \-]{9}):(.*)$", body)
-        if not match:
+        # Dumo out if no valid addresse
+        if not addresse_match:
             break
-
-        addresse, body = match[0]
-
-        parsed.update({'addresse': addresse.rstrip(' ')})
+        body = body2
 
         # check if it's a telemetry configuration message
         body, result = parse_telemetry_config(body)
