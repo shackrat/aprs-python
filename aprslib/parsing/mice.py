@@ -73,6 +73,13 @@ RADIO_MODELS = [
             't': 'Tracker'
         },
         {
+            'p': 'T',
+            's': '*v',
+            'b': 'KissOZ',
+            'm': 'Tracker',
+            't': 'Tracker'
+        },
+        {
             'p': '>',
             's': 'v',
             'b': 'Kenwood',
@@ -106,6 +113,13 @@ RADIO_MODELS = [
             'b': 'Kenwood',
             'm': 'TH-D74',
             't': 'HT'
+        },
+        {
+            'p': '>',
+            's': ':2',
+            'b': 'SQ8L',
+            'm': 'VP-Tracker',
+            't': 'Tracker'
         },
         {
             'p': '`',
@@ -384,7 +398,12 @@ def parse_mice(dstcall, body):
             # Find a matching suffix
             for i in range(len(RADIO_MODELS)):
                 if comment[-(len(RADIO_MODELS[i]["s"])):] in RADIO_MODELS[i]["s"] and RADIO_TYPE_PREFIXES[prefix] == RADIO_MODELS[i]["p"]:
-                    parsed.update({'mradio_brand': RADIO_MODELS[i]["b"], 'mradio_model': RADIO_MODELS[i]["m"], 'mradio_type': RADIO_MODELS[i]["t"]})
+                    parsed.update({
+                        'mradio_brand': RADIO_MODELS[i]["b"],
+                        'mradio_model': RADIO_MODELS[i]["m"],
+                        'mradio_type': RADIO_MODELS[i]["t"],
+                        'mmsg_capable': 'Yes' if RADIO_MODELS[i]["p"] == '`' else 'No' if RADIO_MODELS[i]["p"] == '\'' else 'Unknown',
+                    })
                     comment = comment.lstrip(RADIO_MODELS[i]["p"]).rstrip(RADIO_MODELS[i]["s"])
 
         # rest is a comment
