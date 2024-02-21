@@ -116,6 +116,13 @@ RADIO_MODELS = [
         },
         {
             'p': '>',
+            's': '&',
+            'b': 'Kenwood',
+            'm': 'TH-D75',
+            't': 'HT'
+        },
+        {
+            'p': '>',
             's': ':2',
             'b': 'SQ8L',
             'm': 'VP-Tracker',
@@ -212,7 +219,7 @@ RADIO_MODELS = [
 # 'lllc/s$/.........         Mic-E no message capability
 # 'lllc/s$/>........         Mic-E message capability
 # `lllc/s$/>........         Mic-E old posit
-def parse_mice(dstcall, body):
+def parse_mice(dstcall, body, packet_type):
     parsed = {'format': 'mic-e'}
 
     dstcall = dstcall.split('-')[0]
@@ -402,7 +409,7 @@ def parse_mice(dstcall, body):
                         'mradio_brand': RADIO_MODELS[i]["b"],
                         'mradio_model': RADIO_MODELS[i]["m"],
                         'mradio_type': RADIO_MODELS[i]["t"],
-                        'mmsg_capable': 'Yes' if RADIO_MODELS[i]["p"] == '`' else 'No' if RADIO_MODELS[i]["p"] == '\'' else 'Unknown',
+                        'mmsg_capable': 'Yes' if packet_type == '`' else 'No' if packet_type == '\'' else 'Unknown'
                     })
                     comment = comment.lstrip(RADIO_MODELS[i]["p"]).rstrip(RADIO_MODELS[i]["s"])
 

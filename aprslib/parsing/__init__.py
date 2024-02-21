@@ -187,7 +187,7 @@ def _try_toparse_body(packet_type, body, parsed):
     elif packet_type in "`'":
         logger.debug("Attempting to parse as mic-e packet")
 
-        body, result = parse_mice(parsed['to'], body)
+        body, result = parse_mice(parsed['to'], body, packet_type)
 
     # Message packet
     elif packet_type == ':':
