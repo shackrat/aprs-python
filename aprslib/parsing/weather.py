@@ -47,7 +47,8 @@ def parse_weather_data(body):
     parsed = {}
 
     # parse weather data
-    body = re.sub(r"^([0-9]{3})/([0-9]{3})", "c\\1s\\2", body)
+    # SW 9-30-24 - Add \. as course and speed can contain ...
+    body = re.sub(r"^([0-9\.]{3})/([0-9\.]{3})", "c\\1s\\2", body)
     body = body.replace('s', 'S', 1)
 
     # match as many parameters from the start, rest is comment
