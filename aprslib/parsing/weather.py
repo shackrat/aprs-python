@@ -51,9 +51,9 @@ def parse_weather_data(body):
     body = re.sub(r"^([0-9\.]{3})/([0-9\.]{3})", "c\\1s\\2", body)
     body = body.replace('s', 'S', 1)
 
+    # SW 10-01-24 - Make matchall regex compatible with findall regex
     # match as many parameters from the start, rest is comment
-    data = re.match(r"^([cSgtrpPlLs#][0-9\-\. ]{3}|h[0-9\. ]{2}|b[0-9\. ]{5})+", body)
-
+    data = re.match(r"^([cSgtrpPlLs#][0-9\-\. ]{3}|t[0-9\. \-]{2}|h[0-9\. ]{2}|b[0-9\. ]{5}|s[0-9\. ]{2}|s[0-9\. ]{1})+", body)
     if data:
         data = data.group()
         # split out data from comment
