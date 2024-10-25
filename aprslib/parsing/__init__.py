@@ -43,6 +43,7 @@ from aprslib.parsing.message import *
 from aprslib.parsing.telemetry import *
 from aprslib.parsing.thirdparty import *
 from aprslib.parsing.weather import *
+from aprslib.parsing.capabilities import *
 
 unsupported_formats = {
         '#':'raw weather report',
@@ -55,7 +56,7 @@ unsupported_formats = {
         '+':'reserved',
         '-':'unused',
         '.':'reserved',
-        '<':'station capabilities',
+        #'<':'station capabilities',
         '?':'general query format',
         '[':'maidenhead locator beacon',
         '\\':'unused',
@@ -159,6 +160,11 @@ def _try_toparse_body(packet_type, body, parsed):
 
     if packet_type in unsupported_formats:
         raise UnknownFormat("Format is not supported: '{}' {}".format(packet_type, unsupported_formats[packet_type]))
+
+    # Capabilities
+    elif packet_type == '<':
+        logger.debug("Packet is station capabilities")
+        body, result = parse_capabilities(body)
 
     # 3rd party traffic
     elif packet_type == '}':

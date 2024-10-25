@@ -396,9 +396,9 @@ def parse_mice(dstcall, body, packet_type):
         # parse DAO extention
         body = parse_dao(body, parsed)
 
-        # Look for Mic-Eradio data in the comment
+        # Look for Mic-E radio data in the comment
         # See http://www.aprs.org/aprs12/mic-e-types.txt for spec details
-        comment = body.strip(' ')
+        comment = body.lstrip(' ')
         if (len(comment) >= 1 and comment[0] in RADIO_TYPE_PREFIXES):
             prefix = RADIO_TYPE_PREFIXES.index(comment[0])
 
