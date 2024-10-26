@@ -44,6 +44,7 @@ from aprslib.parsing.telemetry import *
 from aprslib.parsing.thirdparty import *
 from aprslib.parsing.weather import *
 from aprslib.parsing.capabilities import *
+from aprslib.parsing.item import parse_item
 
 unsupported_formats = {
         '#':'raw weather report',
@@ -51,7 +52,7 @@ unsupported_formats = {
         '%':'agrelo',
         '&':'reserved',
         '(':'unused',
-        ')':'item report',
+        #')':'item report',
         '*':'complete weather report',
         '+':'reserved',
         '-':'unused',
@@ -164,11 +165,19 @@ def _try_toparse_body(packet_type, body, parsed):
     # Capabilities
     elif packet_type == '<':
         logger.debug("Packet is station capabilities")
+
         body, result = parse_capabilities(body)
+
+    # Item Report
+    elif packet_type == ')':
+        logger.debug("Packet is item report")
+
+        body, result = parse_item(packet_type, body)
 
     # 3rd party traffic
     elif packet_type == '}':
         logger.debug("Packet is third-party")
+
         body, result = parse_thirdparty(body)
 
     # user defined

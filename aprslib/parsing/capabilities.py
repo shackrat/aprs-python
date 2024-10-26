@@ -6,9 +6,10 @@ __all__ = [
         'parse_capabilities',
         ]
 
+
 def parse_capabilities(body):
     capability_data = {}
-    print(body)
+
     # Parse station capabilities message
     try:
         kvpairs = body.split(",")
