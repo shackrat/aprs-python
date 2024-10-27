@@ -15,7 +15,7 @@ __all__ = [
 def parse_position(packet_type, body):
     parsed = {}
 
-    if packet_type not in '!=/@;':
+    if packet_type not in '!=/@;)':
         _, body = body.split('!', 1)
         packet_type = '!'
 
@@ -30,6 +30,20 @@ def parse_position(packet_type, body):
                 })
 
             body = body[10:]
+        else:
+            raise ParseError("invalid format")
+
+    elif packet_type == ')':
+        logger.debug("Attempting to parse item report format")
+        match = re.findall(r"^([ -~]{3,9})(!|_)", body)
+        if match:
+            name, flag = match[0]
+            parsed.update({
+                'item_name': name,
+                'alive': flag == '!',
+                })
+
+            body = body[(len(name)+1):]
         else:
             raise ParseError("invalid format")
     else:
