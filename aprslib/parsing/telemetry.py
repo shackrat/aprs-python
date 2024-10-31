@@ -65,10 +65,14 @@ def parse_telemetry_config(body):
                 't%s' % form: defvals
                 })
         elif form == "EQNS":
-            eqns = body.rstrip().split(',')[:15]
+            # From the spec. "The list can terminate after any field." so the EQNS field may not be 15 chars and could
+            # contain extraneous garbage at the end.  Technically the packet is invalid, but we'll attempt to remove them.
+            eqns = body.rstrip('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz ').split(',')[:15]
             teqns = [0, 1, 0] * 5
 
             for idx, val in enumerate(eqns):
+                # Make sure there's no whitespace preceeding the data
+                val = val.lstrip();
                 if not re.match(r"^([-]?\d*\.?\d+|)$", val):
                     raise ParseError("value at %d is not a number in %s" % (idx+1, form))
                 else:
@@ -86,7 +90,9 @@ def parse_telemetry_config(body):
                 't%s' % form: teqns
                 })
         elif form == "BITS":
-            match = re.findall(r"^([01]{8}),(.{0,23})$", body.rstrip())
+            # From the spec. "The list can terminate after any field." so the EQNS field may not be 15 chars and could
+            # contain extraneous garbage at the end.  Technically the packet is invalid, but we'll attempt to remove them.
+            match = re.findall(r"^([01]{8}),(.{0,23})$", body.rstrip('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz '))
             if not match:
                 raise ParseError("incorrect format of %s (title too long?)" % form)
 
