@@ -4,6 +4,7 @@ from aprslib.exceptions import ParseError
 __all__ = [
     'parse_weather',
     'parse_weather_data',
+    'parse_raw_weather'
     ]
 
 # constants
@@ -80,3 +81,67 @@ def parse_weather(body):
         }
 
     return ('', parsed)
+
+# Parse peet Ultimeter raw packet data
+# https://www.peetbros.com/HTML_Pages/faqs.htm#Q5
+def parse_raw_weather(body):
+    print(body)
+
+    if (body[0:4] == 'ULTW'):
+        match = re.match(r"^ULTW([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)?([0-9a-fA-F]{4}|----)?", body)
+
+        if not match:
+            raise ParseError("invalid raw weather report format")
+
+        wxparsed = {
+            'wind_gust': ((int(match.group(1), 16) / 3.6) / 10) if match.group(1) != "----" else None,
+            'wind_direction': (round(int(match.group(2), 16) * 1.41176)) if match.group(2) != "----" else None,
+            'temperature': (((int(match.group(3), 16) / 10) - 32)/ 1.8) if match.group(3) != "----" else None,
+            'rain_since_midnight': ((int(match.group(4), 16) * 0.254)) if match.group(4) != "----" else None,
+            'pressure': (int(match.group(5), 16) / 10) if match.group(5) != "----" else None,
+            'humidity': (int(match.group(9), 16) / 10) if match.group(9) != "----" else None,
+            'rain_since_midnight': ((int(match.group(12), 16) * 0.254)) if match.group(12) != "----" else None,
+            'wind_speed': ((int(match.group(13), 16) / 3.6) / 10) if match.group(13) != "----" else None,
+            }
+
+        weather = {}
+        for key, value in wxparsed.items():
+            if (value is not None):
+                weather[key] = value
+
+        parsed = {
+            'format': 'wxraw',
+            'weather': weather,
+            }
+        return ('', parsed)
+
+    elif (body[0:1] == '!'):
+        match = re.match(r"^!([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)?([0-9a-fA-F]{4}|----)?", body)
+
+        if not match:
+            raise ParseError("invalid raw weather report format")
+
+        wxparsed = {
+            'wind_gust': ((int(match.group(1), 16) / 3.6) / 10) if match.group(1) != "----" else None,
+            'wind_direction': (round(int(match.group(2), 16) * 1.41176)) if match.group(2) != "----" else None,
+            'temperature': (((int(match.group(3), 16) / 10) - 32)/ 1.8) if match.group(3) != "----" else None,
+            'rain_since_midnight': ((int(match.group(4), 16) * 0.254)) if match.group(4) != "----" else None,
+            'pressure': (int(match.group(5), 16) / 10) if match.group(5) != "----" else None,
+            'humidity': (int(match.group(7), 16) / 10) if match.group(7) != "----" else None,
+            'rain_since_midnight': ((int(match.group(11), 16) * 0.254)) if match.group(11) != "----" else None,
+            'wind_speed': ((int(match.group(12), 16) / 3.6) / 10) if match.group(12) != "----" else None,
+            }
+
+        weather = {}
+        for key, value in wxparsed.items():
+            if (value is not None):
+                weather[key] = value
+
+        parsed = {
+            'format': 'wxraw',
+            'weather': weather,
+            }
+        return ('', parsed)
+
+    else:
+        return ('', {})

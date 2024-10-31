@@ -48,7 +48,7 @@ from aprslib.parsing.item import parse_item
 
 unsupported_formats = {
         '#':'raw weather report',
-        '$':'raw gps',
+        #'$':'raw gps',
         '%':'agrelo',
         '&':'reserved',
         '(':'unused',
@@ -215,6 +215,12 @@ def _try_toparse_body(packet_type, body, parsed):
         logger.debug("Attempting to parse as positionless weather report")
 
         body, result = parse_weather(body)
+
+    # Raw weather report from Peet Ultimeter
+    elif ((packet_type == '$' and body[0:4] == 'ULTW') or (packet_type == '!' and body[0:1] == '!')):
+        logger.debug("Attempting to parse as raw Peet weather report")
+
+        body, result = parse_raw_weather(body)
 
     # postion report (regular or compressed)
     elif (packet_type in '!=/@;' or
