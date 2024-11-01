@@ -135,9 +135,15 @@ def parse(packet):
         _try_toparse_body(packet_type, body, parsed)
 
     # capture ParseErrors and attach the packet
-    except (UnknownFormat, ParseError) as exp:
+    except (ParseError) as exp:
         exp.packet = packet
         raise
+
+    # Attempt to parse beacon
+    except (UnknownFormat) as exp:
+        # if we fail all attempts to parse, try beacon packet
+        logger.debug("Unknown format detected...  Attempting to parse as beacon.")
+        pass
 
     # if we fail all attempts to parse, try beacon packet
     if 'format' not in parsed:
@@ -147,10 +153,10 @@ def parse(packet):
                         "WX.*|ZIP.*|UIDIGI)$", parsed['to']):
             raise UnknownFormat("format is not supported", packet)
 
-        parsed.update({
-            'format': 'beacon',
-            'text': packet_type + body,
-            })
+    parsed.update({
+        'format': 'beacon',
+        'text': packet_type + body,
+        })
 
     logger.debug("Parsed ok.")
     return parsed

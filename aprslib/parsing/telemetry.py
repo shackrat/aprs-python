@@ -90,9 +90,8 @@ def parse_telemetry_config(body):
                 't%s' % form: teqns
                 })
         elif form == "BITS":
-            # From the spec. "The list can terminate after any field." so the EQNS field may not be 15 chars and could
-            # contain extraneous garbage at the end.  Technically the packet is invalid, but we'll attempt to remove them.
-            match = re.findall(r"^([01]{8}),(.{0,23})$", body.rstrip('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz '))
+            # From the spec. The projec title should be no more than 23 characters but can be as long as 183.
+            match = re.findall(r"^([01]{8}),(.{0,183})$", body.rstrip('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz '))
             if not match:
                 raise ParseError("incorrect format of %s (title too long?)" % form)
 
