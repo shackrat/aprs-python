@@ -55,7 +55,9 @@ def parse_telemetry_config(body):
             vals = body.rstrip().split(',')[:13]
 
             for val in vals:
-                if not re.match(r"^(.{1,20}|)$", val):
+                # Some clients allow for longer PARM names. We'll allow up 30 per field
+                # https://github.com/PhirePhly/aprs_notes/blob/master/telemetry_format.md#
+                if not re.match(r"^(.{1,30}|)$", val):
                     raise ParseError("incorrect format of %s (name too long?)" % form)
 
             defvals = [''] * 13
