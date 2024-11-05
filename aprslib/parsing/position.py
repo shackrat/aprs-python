@@ -179,6 +179,13 @@ def parse_normal(body):
         # position ambiguity
         posambiguity = lat_min.count(' ')
 
+        # From the spec (aprs101.pdf)
+        #   The level of ambiguity specified in the latitude will automatically apply to the longitude as well
+        #   — it is not necessary to include any (space) characters in the longitude.
+        # We will assure that lon_min reflects this at all times
+        if (posambiguity > 0):
+            lon_min = lon_min[:len(lon_min)-posambiguity] + (posambiguity * ' ');
+
         if posambiguity != lon_min.count(' '):
             raise ParseError("latitude and longitude ambiguity mismatch")
 
