@@ -85,7 +85,6 @@ def parse_weather(body):
 # Parse peet Ultimeter raw packet data
 # https://www.peetbros.com/HTML_Pages/faqs.htm#Q5
 def parse_raw_weather(body):
-    print(body)
 
     if (body[0:4] == 'ULTW'):
         match = re.match(r"^ULTW([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)?([0-9a-fA-F]{4}|----)?", body)
