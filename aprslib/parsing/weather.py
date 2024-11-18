@@ -69,7 +69,7 @@ def parse_weather_data(body):
 def parse_weather(body):
     match = re.match(r"^(\d{8})c[\. \d]{3}s[\. \d]{3}g[\. \d]{3}t[\. \d]{3}", body)
     if not match:
-        raise ParseError("invalid positionless weather report format")
+        raise ParseError("Invalid positionless weather report format")
 
     comment, weather = parse_weather_data(body[8:])
 
@@ -90,7 +90,7 @@ def parse_raw_weather(body):
         match = re.match(r"^ULTW([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)?([0-9a-fA-F]{4}|----)?", body)
 
         if not match:
-            raise ParseError("invalid raw weather report format")
+            raise ParseError("Invalid raw weather report format")
 
         wxparsed = {
             'wind_gust': ((int(match.group(1), 16) / 3.6) / 10) if match.group(1) != "----" else None,
@@ -118,7 +118,7 @@ def parse_raw_weather(body):
         match = re.match(r"^!([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)([0-9a-fA-F]{4}|----)?([0-9a-fA-F]{4}|----)?", body)
 
         if not match:
-            raise ParseError("invalid raw weather report format")
+            raise ParseError("Invalid raw weather report format")
 
         wxparsed = {
             'wind_gust': ((int(match.group(1), 16) / 3.6) / 10) if match.group(1) != "----" else None,

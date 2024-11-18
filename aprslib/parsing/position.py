@@ -31,7 +31,7 @@ def parse_position(packet_type, body):
 
             body = body[10:]
         else:
-            raise ParseError("invalid format")
+            raise ParseError("Invalid object packet format")
 
     elif packet_type == ')':
         logger.debug("Attempting to parse item report format")
@@ -45,7 +45,7 @@ def parse_position(packet_type, body):
 
             body = body[(len(name)+1):]
         else:
-            raise ParseError("invalid format")
+            raise ParseError("Invalid item packet format")
     else:
         parsed.update({"messagecapable": packet_type in '@='})
 
@@ -55,7 +55,7 @@ def parse_position(packet_type, body):
         parsed.update(result)
 
     if len(body) == 0 and 'timestamp' in parsed:
-        raise ParseError("invalid position report format")
+        raise ParseError("Invalid position report format")
 
     # decode body
     body, result = parse_compressed(body)
@@ -70,7 +70,7 @@ def parse_position(packet_type, body):
         if len(result) > 0:
             logger.debug("Parsed as normal position report")
         else:
-            raise ParseError("invalid format")
+            raise ParseError("Invalid position report format")
     # check comment for weather information
     # Page 62 of the spec
     if parsed['symbol'] == '_':
@@ -125,7 +125,7 @@ def parse_compressed(body):
             latitude = 90 - (base91.to_decimal(compressed[1:5]) / 380926.0)
             longitude = -180 + (base91.to_decimal(compressed[5:9]) / 190463.0)
         except ValueError:
-            raise ParseError("invalid characters in latitude/longitude encoding")
+            raise ParseError("Invalid characters in latitude/longitude encoding")
 
         # parse csT
 
@@ -184,10 +184,10 @@ def parse_normal(body):
         #   — it is not necessary to include any (space) characters in the longitude.
         # We will assure that lon_min reflects this at all times
         if (posambiguity > 0):
-            lon_min = lon_min[:len(lon_min)-posambiguity] + (posambiguity * ' ');
+            lon_min = re.sub(r"[\s\d]", " ", lon_min[::-1], posambiguity)[::-1]
 
         if posambiguity != lon_min.count(' '):
-            raise ParseError("latitude and longitude ambiguity mismatch")
+            raise ParseError("Latitude and longitude ambiguity mismatch")
 
         parsed.update({'posambiguity': posambiguity})
 
@@ -202,9 +202,9 @@ def parse_normal(body):
         # validate longitude and latitude
 
         if int(lat_deg) > 89 or int(lat_deg) < 0:
-            raise ParseError("latitude is out of range (0-90 degrees)")
+            raise ParseError("Latitude is out of range (0-90 degrees)")
         if int(lon_deg) > 179 or int(lon_deg) < 0:
-            raise ParseError("longitude is out of range (0-180 degrees)")
+            raise ParseError("Longitude is out of range (0-180 degrees)")
         """
         f float(lat_min) >= 60:
             raise ParseError("latitude minutes are out of range (0-60)")

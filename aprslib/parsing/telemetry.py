@@ -58,7 +58,7 @@ def parse_telemetry_config(body):
                 # Some clients allow for longer PARM names. We'll allow up 30 per field
                 # https://github.com/PhirePhly/aprs_notes/blob/master/telemetry_format.md#
                 if not re.match(r"^(.{1,30}|)$", val):
-                    raise ParseError("incorrect format of %s (name too long?)" % form)
+                    raise ParseError("Incorrect format of %s (name too long?)" % form)
 
             defvals = [''] * 13
             defvals[:len(vals)] = vals
@@ -76,7 +76,7 @@ def parse_telemetry_config(body):
                 # Make sure there's no whitespace preceeding the data
                 val = val.lstrip();
                 if not re.match(r"^([-]?\d*\.?\d+|)$", val):
-                    raise ParseError("value %s at %d is not a number in %s" % (val, idx+1, form))
+                    raise ParseError("Value %s at %d is not a number in %s" % (val, idx+1, form))
                 else:
                     try:
                         val = int(val)
@@ -95,7 +95,7 @@ def parse_telemetry_config(body):
             # From the spec. The projec title should be no more than 23 characters but can be as long as 183.
             match = re.findall(r"^([01]{8}),(.{0,183})$", body.rstrip('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz .'))
             if not match:
-                raise ParseError("incorrect format of %s (title too long?)" % form)
+                raise ParseError("Incorrect format of %s (title too long?)" % form)
 
             bits, title = match[0]
 
