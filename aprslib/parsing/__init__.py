@@ -153,10 +153,10 @@ def parse(packet):
                         "WX.*|ZIP.*|UIDIGI)$", parsed['to']):
             raise UnknownFormat("format is not supported", packet)
 
-    parsed.update({
-        'format': 'beacon',
-        'text': packet_type + body,
-        })
+        parsed.update({
+            'format': 'beacon',
+            'text': packet_type + body,
+            })
 
     logger.debug("Parsed ok.")
     return parsed
