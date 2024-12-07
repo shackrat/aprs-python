@@ -131,6 +131,8 @@ class IS(object):
         self.buf = b''
 
         if self.sock is not None:
+            # Inform the server that we intend to close the connection before actually closing
+            self.sock.shutdown(socket.SHUT_RDWR)
             self.sock.close()
 
     def sendall(self, line):
