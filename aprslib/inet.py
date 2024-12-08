@@ -132,8 +132,14 @@ class IS(object):
 
         if self.sock is not None:
             # Inform the server that we intend to close the connection before actually closing
-            self.sock.shutdown(socket.SHUT_RDWR)
-            self.sock.close()
+            try:
+                self.sock.shutdown(socket.SHUT_RDWR)
+                self.sock.close()
+            except Exception as e:
+                self.logger.error("Close() returned error: %s" %(e))
+            finally:
+                # Set sock to None to ensure we don't leak if either shutdown() or close() throws an exception
+                self.sock = None
 
     def sendall(self, line):
         """
