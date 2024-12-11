@@ -321,6 +321,11 @@ class IS(object):
         """
         Generator for complete lines, received from the server
         """
+
+        # In embedded server applications, this function could be called as a scheduled task (i.e. reactor) after the socket is closed
+        if self.sock is None:
+            self.logger.error("Socket already closed.")
+            return
         try:
             self.sock.setblocking(0)
         except socket.error as e:
