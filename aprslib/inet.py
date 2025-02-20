@@ -300,7 +300,7 @@ class IS(object):
                 raise LoginError("Server responded with empty callsign???")
             if callsign != self.callsign:
                 raise LoginError("Server: %s" % test)
-            if status != "verified," and self.passwd != "-1":
+            if not status.startswith("verified") and self.passwd != "-1":
                 raise LoginError("Password is incorrect")
 
             if self.passwd == "-1":
@@ -352,7 +352,10 @@ class IS(object):
                    and len(self.buf) == 0):
                         break
                 else:
-                    self.logger.error("socket error on recv(): %s" % str(e))
+                    if len(self.buf) > 0 and b"\r\n" in self.buf:
+                        pass
+                    else:
+                        self.logger.error("socket error on recv(): %s" % str(e))
 
             self.buf += short_buf
 

@@ -111,7 +111,7 @@ def parse_telemetry_report(text):
     parsed = {}
     rest = ""
 
-    match = re.findall(r"(^#\d{3},(\d+(\.\d+)?,){5}[01]{8}$)", text)
+    match = re.findall(r"(^#\d{1,3},(\d+(\.\d+)?,){5}[01]{8}$)", text)
 
     if match:
         logger.debug("Attempting to parse telemetry-message packet")
