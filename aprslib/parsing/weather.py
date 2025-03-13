@@ -100,7 +100,7 @@ def parse_raw_weather(body):
             'pressure': (int(match.group(5), 16) / 10) if match.group(5) != "----" else None,
             'humidity': (int(match.group(9), 16) / 10) if match.group(9) != "----" else None,
             'rain_since_midnight': ((int(match.group(12), 16) * 0.254)) if match.group(12) != "----" else None,
-            'wind_speed': ((int(match.group(13), 16) / 3.6) / 10) if match.group(13) != "----" else None,
+            'wind_speed': ((int(match.group(13), 16) / 3.6) / 10) if match.group(13) is not None and match.group(13) != "----" else None,  # Group 13 is not available on some models
             }
 
         weather = {}
